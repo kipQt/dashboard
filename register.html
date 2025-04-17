@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Register - Deep Carbon Africa</title>
+  <link rel="stylesheet" href="style.css" />
+  <!-- Basic CSS and JavaScript for form submission -->
+</head>
+<body>
+  <header>
+    <div class="header-left">
+      <h1>Deep Carbon Africa</h1>
+    </div>
+  </header>
+
+  <main>
+    <section id="registration-section">
+      <h2>Create a New Account</h2>
+      <form id="registration-form">
+        <label for="reg-name">Full Name:</label>
+        <input type="text" id="reg-name" required>
+
+        <label for="reg-email">Email:</label>
+        <input type="email" id="reg-email" required>
+
+        <label for="reg-password">Password:</label>
+        <input type="password" id="reg-password" required>
+
+        <label for="reg-farm">Farm Name:</label>
+        <input type="text" id="reg-farm" required>
+
+        <label for="reg-county">County:</label>
+        <input type="text" id="reg-county" required>
+
+        <button type="submit">Register</button>
+      </form>
+      <p>Already have an account? <a href="login.html">Login here</a></p>
+    </section>
+  </main>
+
+  <footer>
+    <p>© 2025 Deep Carbon Africa</p>
+  </footer>
+
+  <script>
+    // Registration functionality
+    document.getElementById('registration-form').addEventListener('submit', function(e) {
+      e.preventDefault();
+
+      const name = document.getElementById('reg-name').value;
+      const email = document.getElementById('reg-email').value;
+      const password = document.getElementById('reg-password').value;
+      const farm = document.getElementById('reg-farm').value;
+      const county = document.getElementById('reg-county').value;
+
+      // Save user data to localStorage (replace with server-side logic)
+      const userData = { name, email, password, farm, county };
+      localStorage.setItem('user', JSON.stringify(userData));
+
+      alert('Registration successful! You can now log in.');
+      window.location.href = 'login.html'; // Redirect to login page
+    });
+  </script>
+</body>
+</html>

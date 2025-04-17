@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Deep Carcon Africa</title>
+  <link rel="stylesheet" href="style.css" />
+
+  <!-- Leaflet & ESRI Maps -->
+  <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+  <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+  <script src="https://unpkg.com/esri-leaflet"></script>
+
+  <style>
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background-color: #f4f6f8;
+    }
+
+    header {
+      background-color: #2c3e50;
+      color: white;
+      padding: 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .container {
+      display: flex;
+      height: calc(100vh - 80px);
+    }
+
+    .sidebar {
+      width: 250px;
+      background-color: #34495e;
+      color: white;
+      padding: 20px;
+      box-sizing: border-box;
+    }
+
+    .sidebar h2 {
+      margin-bottom: 20px;
+    }
+
+    .sidebar a {
+      display: block;
+      color: white;
+      text-decoration: none;
+      margin: 10px 0;
+      padding: 10px;
+      background-color: #2c3e50;
+      border-radius: 5px;
+    }
+
+    .sidebar a:hover {
+      background-color: #1abc9c;
+    }
+
+    .main-content {
+      flex: 1;
+      padding: 20px;
+      overflow-y: auto;
+    }
+
+    #map {
+      height: 400px;
+      width: 100%;
+      margin-bottom: 20px;
+    }
+
+    .card {
+      background: white;
+      padding: 20px;
+      margin-bottom: 20px;
+      border-radius: 10px;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    }
+
+    button.logout {
+      background-color: #e74c3c;
+      color: white;
+      padding: 10px 15px;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+
+    .user-info {
+      font-size: 0.9rem;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Deep Carbon Africa</h1>
+    <div class="user-info">
+      <span id="user-name"></span>
+      <button class="logout" id="logoutBtn">Logout</button>
+    </div>
+  </header>
+
+  <div class="container">
+    <div class="sidebar">
+      <h2>Navigation</h2>
+      <a href="#overview">🌱 Overview</a>
+      <a href="#map">🗺️ Farm Map</a>
+      <a href="#stats">📊 Soil Carbon Stats</a>
+      <a href="#applications">🚜 Applications</a>
+      <a href="#profile">👤 Profile</a>
+    </div>
+
+    <div class="main-content">
+      <section id="overview" class="card">
+        <h2>Welcome!</h2>
+        <p>This dashboard provides insights into your farm's soil carbon content, biochar applications, and related activities.</p>
+      </section>
+
+      <section id="map" class="card">
+        <h2>Farm Location</h2>
+        <div id="map"></div>
+      </section>
+
+      <section id="stats" class="card">
+        <h2>Soil Carbon Statistics</h2>
+        <p>Recent satellite analysis shows changes in organic carbon levels over the last few months.</p>
+        <ul>
+          <li>Average SOC: 1.35%</li>
+          <li>Last Application Impact: +0.2%</li>
+          <li>Trend: Increasing ✅</li>
+        </ul>
+      </section>
+
+      <section id="applications" class="card">
+        <h2>Biochar Applications</h2>
+        <p>Record of biochar application to different fields:</p>
+        <ul>
+          <li>Field A - Jan 2024 - 2 tonnes</li>
+          <li>Field B - Mar 2024 - 1.5 tonnes</li>
+        </ul>
+      </section>
+
+      <section id="profile" class="card">
+        <h2>User Profile</h2>
+        <p><strong>Name:</strong> <span id="profile-name"></span></p>
+        <p><strong>Farm:</strong> <span id="profile-farm"></span></p>
+        <p><strong>County:</strong> <span id="profile-county"></span></p>
+      </section>
+    </div>
+  </div>
+
+  <script>
+    // Authentication check
+    const isLoggedIn = localStorage.getItem('isLoggedIn');
+    if (!isLoggedIn || isLoggedIn === "false") {
+      window.location.href = "index.html";
+    }
+
+    // Load user info
+    const user = JSON.parse(localStorage.getItem('user'));
+    if (user) {
+      document.getElementById('user-name').textContent = user.name;
+      document.getElementById('profile-name').textContent = user.name;
+      document.getElementById('profile-farm').textContent = user.farm;
+      document.getElementById('profile-county').textContent = user.county;
+    }
+
+    // Logout
+    document.getElementById('logoutBtn').addEventListener('click', function () {
+      localStorage.setItem('isLoggedIn', false);
+      window.location.href = "index.html";
+    });
+
+    // Map
+    const map = L.map('map').setView([-1.2921, 36.8219], 6);
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+      attribution: '© OpenStreetMap contributors'
+    }).addTo(map);
+
+    // Add sample marker
+    if (user && user.farm && user.county) {
+      L.marker([-1.2921, 36.8219]).addTo(map)
+        .bindPopup(`<b>${user.farm}</b><br>${user.county}`).openPopup();
+    }
+  </script>
+</body>
+</html>
